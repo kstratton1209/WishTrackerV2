@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <title>Wishes</title>
+</head>
+ <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+<style>
+    .wrapper{
+      width:800px;
+      height: 1080px;
+      margin-left: 20px;
+      padding: 20px;
+    }
+
+    .rightnav{
+        width: 500px;
+        justify-content: space-between;
+    }
+
+    .comments, .addComment {
+        margin-left: 10px
+    }
+
+    .granted {
+        margin-top: 50px;
+    }
+
+  
+
+
+
+
+
+</style>
+<body>
+    <div class="wrapper">
+        <div class="header" style = "display:flex; justify-content: space-between;">
+            <h1>Hello {{request.session.first_name}}!</h1>
+
+            <div class="links">
+                <a href="/logout" style = "margin: 60px 10px 0px 10px;">Logout</a>
+                <a href="/content/{{request.session.id}}/stats" class="btn btn-primary" style= "margin-top: 20px">View stats</a>
+                <a href="/content/addWish" class="btn btn-primary" style= "margin-top: 20px">Click here to make a wish</a>
+            </div>
+        </div>
+        <p></p>
+        <p>Your wish list:</p>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Date added</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for wishes in ungranted_wishes %}
+                {% if wishes.user.id == request.session.id %} 
+
+                    <tr>
+                        <th scope="row">{{wishes.wish}}</th>
+                        <td>{{wishes.created_at}}</td>
+                        <td>
+                            <a href="/content/{{wishes.id}}/destroy">Remove |</a>
+                            <a href="/content/{{wishes.id}}/edit">Edit |</a>
+                            <a href="/content/{{wishes.id}}/grant">Granted!</a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            
+                
+            </tbody>
+          </table>
+
+        <div class="granted">
+            <p>Granted wishes:</p>
+    
+    
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Item</th>
+                    <th scope="col">Wisher</th>
+                    <th scope="col">Date added</th>
+                    <th scope="col">Date Granted</th>
+                    <th scope="col">Likes</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for wishes in granted_wishes %}
+                    
+
+                        <tr>
+                            <th scope="row">{{wishes.wish}}</th>
+                            <td>{{wishes.user.first_name}}</td>
+                            <td>{{wishes.created_at}}</td>
+                            <td>{{wishes.updated_at}}</td>
+                            
+
+                                <td>{{wishes.likes}}</td>
+                                <td>
+                                    {% if wishes.user.id != request.session.id %} 
+                                    <a href="/content/{{wishes.id}}/like">Like</a>
+                                    {% endif %}
+                                </td>
+                   
+                        </tr>
+                   
+                {% endfor %}
+                
+                    
+                </tbody>
+              </table>
+        </div>
+
+    </div>
+
+</body>
+</html>
